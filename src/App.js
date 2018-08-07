@@ -29,7 +29,8 @@ class App extends Component {
     super()
     this.state = {
       textfield:"",
-      imageurl:""
+      imageurl:"",
+      box:{},
     };
   }
 
@@ -37,17 +38,29 @@ class App extends Component {
     this.setState({textfield: event.target.value})
 }
 
+  calculateFaceLocation = (data) => {
+    const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box;
+    const imageDim = document.getElementById("face");
+    const height = Number(imageDim.height);
+    const width = Number(imageDim.width);
+    return {
+      topRow: clarifaiFace.top_row * height,
+      bottomRow: height - (clarifaiFace.bottom_row * height),
+      leftCol: clarifaiFace.left_col * width,
+      rightCol: width - (clarifaiFace.right_col * width)
+    }
+  }
+
+  displayFaceBox = (box) => {
+    console.log(box);
+    this.setState({box: box});
+  }
+
   onSubmit = () => {
     this.setState({imageurl: this.state.textfield})
-    app.models.predict(Clarifai.FACE_DETECT_MODEL, this.state.textfield).then(
-    function(response) {
-      // do something with response
-      console.log(response.outputs[0].data.regions[0].region_info.bounding_box);
-    },
-    function(err) {
-      // there was an error
-    }
-  );
+    app.models.predict(Clarifai.FACE_DETECT_MODEL, this.state.textfield)
+    .then(response => this.displayFaceBox(this.calculateFaceLocation(response)))
+    .catch(err => console.log(err));
   }
 
   render() {
@@ -60,7 +73,7 @@ class App extends Component {
         <Logo />
         <Rank />
         <ImageLinkForm textchange={this.onTextChange} buttondetect={this.onSubmit}/>
-        <FaceRecognition imagelink={this.state.imageurl}/>
+        <FaceRecognition box={this.state.box} imagelink={this.state.imageurl}/>
       </div>
     );
   }
