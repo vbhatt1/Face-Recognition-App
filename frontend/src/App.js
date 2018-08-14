@@ -26,23 +26,24 @@ const particlesParam = {
     }
 }
 
+const initialState = {
+  textfield:"",
+  imageurl:"",
+  box:{},
+  route: 'signin',
+  signedin: false,
+  user: {
+    id: '',
+    name: '',
+    email: '',
+    entries: 0,
+    joined: ''
+    }
+}
 class App extends Component {
   constructor() {
     super()
-    this.state = {
-      textfield:"",
-      imageurl:"",
-      box:{},
-      route: 'signin',
-      signedin: false,
-      user: {
-        id: '',
-        name: '',
-        email: '',
-        entries: 0,
-        joined: ''
-      }
-    };
+    this.state = initialState;
   }
 
   onTextChange = (event) => {
@@ -82,6 +83,7 @@ class App extends Component {
         .then(count => {
           this.setState(Object.assign(this.state.user,{entries: count}))
         })
+        .catch(console.log)
     }
       this.displayFaceBox(this.calculateFaceLocation(response))
     })
@@ -90,7 +92,7 @@ class App extends Component {
 
   onStatusChange = (route) => {
     if (route === "signout") {
-      this.setState({signedin: false})
+      this.setState(initialState)
     } else if (route === "home") {
       this.setState({signedin: true})
     }
