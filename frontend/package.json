@@ -20,5 +20,5 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
-  "homepage": "https://vbhatt1.github.io/Face-Recognition-App"
+  "homepage": "https://vbhatt1.github.io/Face-Recognition-App/frontend"
 }
