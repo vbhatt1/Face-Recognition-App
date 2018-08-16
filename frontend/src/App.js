@@ -7,12 +7,7 @@ import Logo from './components/Logo/Logo';
 import Rank from './components/Rank/Rank';
 import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm';
 import FaceRecognition from './components/FaceRecognition/FaceRecognition';
-import Clarifai from 'clarifai';
 import './App.css';
-
-const app = new Clarifai.App({
- apiKey: 'ddccc3bae88d4e74b4253d929aa76e69'
-});
 
 const particlesParam = {
     particles: {
@@ -69,10 +64,17 @@ class App extends Component {
 
   onSubmit = () => {
     this.setState({imageurl: this.state.textfield})
-    app.models.predict(Clarifai.FACE_DETECT_MODEL, this.state.textfield)
+    fetch('https://whispering-wildwood-81639.herokuapp.com/imageurl',{
+        method: 'post',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({
+        textfield: this.state.textfield
+        })
+      })
+    .then(response => response.json())
     .then(response => {
       if(response) {
-        fetch('http://localhost:3000/image',{
+        fetch('https://whispering-wildwood-81639.herokuapp.com:3000/image',{
         method: 'put',
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify({
